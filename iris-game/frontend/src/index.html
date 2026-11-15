@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRIS GAME — Fashion Doll Studio 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-blob b1" aria-hidden="true"></div>
+  <div class="bg-blob b2" aria-hidden="true"></div>
+  <div class="bg-blob b3" aria-hidden="true"></div>
+
+  <!-- 1. PORTADA ORIGINAL CON LAS 4 MUÑECAS SIN FONDO -->
+  <section id="screen-menu" class="cover-screen" aria-label="Portada IRIS GAME">
+    <div id="sparkles" class="sparkles-bg" aria-hidden="true"></div>
+
+    <div class="cover-stage">
+      <canvas
+      id="coverDollsCanvas"
+      data-src="Gemini_Generated_Image_uxxgaxuxxgaxuxxg.jpg?v=2"
+      ria-label="Jacky, Ximena, Lucy y Valeria — IRIS GAME"
+      ></canvas>
+    </div>
+
+    <header class="cover-header">
+      <h1 class="cover-title">IRIS GAME</h1>
+      <span class="cover-badge">Jacky • Ximena • Lucy • Valeria — Tec Lerdo</span>
+    </header>
+
+    <div class="cover-actions">
+      <button id="btn-start-game" type="button" class="cover-play">
+        COMENZAR A JUGAR
+      </button>
+
+      <div class="cover-subactions">
+        <button id="btn-open-tutorial" type="button" class="btn-ghost">
+          ✨ Cómo jugar
+        </button>
+        <button
+          id="menu-audio-btn"
+          type="button"
+          class="icon-btn"
+          aria-pressed="false"
+          title="Activar o silenciar música"
+        >
+          <span class="audio-ico">🔇</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ESCENARIO EDITOR 3D -->
+  <section id="screen-editor" class="screen active hidden" aria-label="Estudio de personalización 3D">
+    <header class="editor-head">
+      <div>
+        <p class="eyebrow">ESTUDIO CREATIVO 3D</p>
+        <h2 id="char-name">JACKY</h2>
+      </div>
+      <div class="editor-nav">
+        <button id="btn-back-menu" type="button" class="btn-ghost sm">← Portada</button>
+        <button id="audio-toggle-btn" type="button" class="icon-btn" aria-pressed="false" title="Música">
+          <span class="audio-ico">🔇</span>
+        </button>
+        <button id="btn-open-history" type="button" class="btn-ghost sm">📋 Historial (BD)</button>
+      </div>
+    </header>
+
+    <div class="editor">
+      <!-- Visor 3D -->
+      <div class="stage-card">
+        <div class="stage-top">
+          <span class="live-dot"></span>
+          <span>VISTA 360° INTERACTIVA</span>
+          <span class="stage-status">Arrastra para girar</span>
+        </div>
+
+        <div class="stage">
+          <canvas id="avatarCanvas" width="420" height="540"></canvas>
+        </div>
+
+        <div class="stage-tools">
+          <button type="button" class="tool-btn" onclick="window.IrisAvatar3D.zoom(-0.35)">🔍+</button>
+          <button type="button" class="tool-btn" onclick="window.IrisAvatar3D.zoom(0.35)">🔍−</button>
+          <button type="button" class="tool-btn" onclick="window.IrisAvatar3D.panY(0.12)">⬆️</button>
+          <button type="button" class="tool-btn" onclick="window.IrisAvatar3D.panY(-0.12)">⬇️</button>
+          <button type="button" class="tool-btn" onclick="window.IrisAvatar3D.resetCam()">🔄 Centrar</button>
+          <button id="btn-random-look" type="button" class="tool-btn">🎲 Aleatorio</button>
+        </div>
+
+        <button id="btn-evaluar" type="button" class="btn-eval">
+          ✨ EVALUAR LOOK Y GUARDAR
+        </button>
+      </div>
+
+      <!-- Panel de personalización -->
+      <aside class="panel-card">
+        <nav class="tabs" role="tablist">
+          <button type="button" class="tab tab-btn active" data-tab="tab-char">👧<span>Chica</span></button>
+          <button type="button" class="tab tab-btn" data-tab="tab-hair">💇‍♀️<span>Cabello</span></button>
+          <button type="button" class="tab tab-btn" data-tab="tab-outfit">👗<span>Ropa</span></button>
+          <button type="button" class="tab tab-btn" data-tab="tab-makeup">💄<span>Makeup</span></button>
+          <button type="button" class="tab tab-btn" data-tab="tab-acc">🎀<span>Extras</span></button>
+        </nav>
+
+        <div class="panel panel-scroll">
+          <!-- Tab 1: Personaje, Pose y Expresión -->
+          <div id="tab-char" class="tab-content active">
+            <div class="grp">
+              <h4>Protagonista</h4>
+              <div id="grid-char" class="char-select-grid"></div>
+            </div>
+            <div class="grp">
+              <h4>Tono de piel</h4>
+              <div id="grid-skin" class="swatches"></div>
+            </div>
+            <div class="grp">
+              <h4>Pose</h4>
+              <div id="grid-pose" class="items-grid"></div>
+            </div>
+            <div class="grp">
+              <h4>Expresión</h4>
+              <div id="grid-exp" class="items-grid"></div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Cabello -->
+          <div id="tab-hair" class="tab-content">
+            <div class="grp">
+              <h4>Estilo de peinado</h4>
+              <div id="grid-hair" class="items-grid"></div>
+            </div>
+            <div class="grp">
+              <h4>Color de cabello</h4>
+              <div id="grid-haircolor" class="swatches"></div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Vestuario -->
+          <div id="tab-outfit" class="tab-content">
+            <div class="grp">
+              <h4>Conjunto</h4>
+              <div id="grid-outfit" class="items-grid"></div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Maquillaje -->
+          <div id="tab-makeup" class="tab-content">
+            <div class="grp">
+              <h4>Labial</h4>
+              <div id="grid-lip" class="swatches"></div>
+              <div id="grid-finish" class="seg-grid" style="margin-top:8px"></div>
+            </div>
+            <div class="grp">
+              <h4>Sombras</h4>
+              <div id="grid-shadow" class="swatches"></div>
+            </div>
+            <div class="grp">
+              <h4>Rubor</h4>
+              <div id="grid-blush" class="swatches"></div>
+            </div>
+            <div class="grp">
+              <h4>Pestañas</h4>
+              <div id="grid-lashes" class="seg-grid"></div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Accesorios y Gadgets -->
+          <div id="tab-acc" class="tab-content">
+            <div class="grp">
+              <h4>Accesorio</h4>
+              <div id="grid-acc" class="items-grid"></div>
+            </div>
+            <div class="grp">
+              <h4>Gadget Tech</h4>
+              <div id="grid-gadget" class="items-grid"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 3. MODAL DE RESULTADO -->
+  <div id="resultModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button type="button" class="modal-x" onclick="document.getElementById('resultModal').classList.add('hidden')">×</button>
+      <h2>¡LOOK EVALUADO!</h2>
+      <div class="result-card">
+        <div class="result-art">
+          <img id="previewImage" alt="Vista previa del look" />
+        </div>
+        <div class="result-info">
+          <span class="kicker">CALIFICACIÓN DEL ESTUDIO</span>
+          <div id="stars-score" class="score">⭐⭐⭐⭐⭐</div>
+          <p id="feedback-text" class="result-comment"></p>
+          <div class="result-actions">
+            <button id="btn-download-png" type="button" class="btn-primary">📸 DESCARGAR FOTO PNG</button>
+            <button type="button" class="btn-ghost" onclick="document.getElementById('resultModal').classList.add('hidden')">Seguir editando</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAL CÓMO JUGAR -->
+  <div id="tutorialModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card narrow">
+      <button type="button" class="modal-x" onclick="document.getElementById('tutorialModal').classList.add('hidden')">×</button>
+      <h2>CÓMO JUGAR</h2>
+      <ol class="steps">
+        <li><i>1</i><div><b>Elige a tu protagonista</b><span>Selecciona entre Jacky, Ximena, Lucy o Valeria.</span></div></li>
+        <li><i>2</i><div><b>Personaliza en 3D</b><span>Cambia peinado, ropa, maquillaje, accesorios y poses.</span></div></li>
+        <li><i>3</i><div><b>Gira y evalúa</b><span>Arrastra el modelo 360° y descarga tu tarjeta PNG.</span></div></li>
+      </ol>
+      <button type="button" class="btn-primary wide" onclick="document.getElementById('tutorialModal').classList.add('hidden')">¡ENTENDIDO!</button>
+    </div>
+  </div>
+
+  <!-- 5. MODAL HISTORIAL DE LOOKS GUARDADOS (CONSULTA GET) -->
+  <div id="historyModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button type="button" class="modal-x" onclick="document.getElementById('historyModal').classList.add('hidden')">×</button>
+      <h2>HISTORIAL GUARDADO EN BASE DE DATOS</h2>
+      <p id="history-summary" class="eyebrow" style="margin-bottom:12px;">Consultando registros...</p>
+      <div id="history-list" style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;text-align:left;"></div>
+      <div class="result-actions" style="margin-top:16px;">
+        <button id="btn-refresh-history" type="button" class="btn-primary">🔄 ACTUALIZAR CONSULTA</button>
+        <button type="button" class="btn-ghost" onclick="document.getElementById('historyModal').classList.add('hidden')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="avatar.js?v=8"></script>
+  <script src="app.js"></script>
+  <script>
+    const tutBtn = document.getElementById('btn-open-tutorial');
+    if (tutBtn) {
+      tutBtn.addEventListener('click', () => {
+        document.getElementById('tutorialModal').classList.remove('hidden');
+      });
+    }
+    window.openModal = (id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    };
+  </script>
+</body>
+</html>

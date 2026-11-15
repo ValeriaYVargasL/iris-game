@@ -1,0 +1,63 @@
+services:
+  motor-python:
+    build: ./motor-python
+    container_name: iris_motor_python
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATA_DIR=/app/data
+    volumes:
+      - iris-data:/app/data
+    networks:
+      iris-network:
+        ipv4_address: 172.28.0.2
+
+  backend-java:
+    build: ./backend-java
+    container_name: iris_backend_java
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHON_ENGINE_URL=http://motor-python:8000
+    depends_on:
+      - motor-python
+    networks:
+      iris-network:
+        ipv4_address: 172.28.0.3
+
+  frontend:
+    build: ./frontend
+    container_name: iris_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-java
+    networks:
+      iris-network:
+        ipv4_address: 172.28.0.4
+
+  frontend-replica:
+    build: ./frontend
+    container_name: iris_frontend_replica
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend-java
+    networks:
+      iris-network:
+        ipv4_address: 172.28.0.5
+
+volumes:
+  iris-data:
+    driver: local
+
+networks:
+  iris-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
